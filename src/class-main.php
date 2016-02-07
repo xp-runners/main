@@ -72,10 +72,9 @@ require 'class-path.php';
 
 // Start I/O layers
 PHP_VERSION < '5.6' && iconv_set_encoding('internal_encoding', \xp::ENCODING);
-array_shift($_SERVER['argv']);
 array_shift($argv);
 foreach ($argv as $i => $val) {
-  $_SERVER['argv'][$i]= $argv[$i]= iconv('utf-7', \xp::ENCODING, $val);
+  $argv[$i]= iconv('utf-7', \xp::ENCODING, $val);
 }
 
 $ext= substr($argv[0], -4, 4);
@@ -84,9 +83,14 @@ if ('.php' === $ext) {
     throw new \Exception('Cannot load '.$argv[0].' - does not exist');
   }
   if (null === ($cl= \lang\ClassLoader::getDefault()->findUri($uri))) {
-    throw new \Exception('Cannot load '.$argv[0].' - not in class path');
+    if (strstr($uri, '.class.php')) {
+      throw new \Exception('Cannot load '.$uri.' - not in class path');
+    }
+    $class= \lang\XPClass::forName('xp.runtime.Evaluate');
+    array_unshift($argv, 'eval');
+  } else {
+    $class= $cl->loadUri($uri);
   }
-  $class= $cl->loadUri($uri);
 } else if ('.xar' === $ext) {
   if (false === ($uri= realpath($argv[0]))) {
     throw new \Exception('Cannot load '.$argv[0].' - does not exist');
@@ -100,6 +104,7 @@ if ('.php' === $ext) {
   $class= \lang\ClassLoader::getDefault()->loadClass($argv[0]);
 }
 
+$_SERVER['argv']= $argv;
 try {
   exit($class->getMethod('main')->invoke(null, array(array_slice($argv, 1))));
 } catch (\lang\SystemExit $e) {
