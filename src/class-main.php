@@ -79,6 +79,7 @@ require 'class-path.php';
 require 'entry.php';
 
 $class= entry($argv);
+$_SERVER['argv']= $argv;
 try {
   exit($class->getMethod('main')->invoke(null, array(array_slice($argv, 1))));
 } catch (\lang\SystemExit $e) {
