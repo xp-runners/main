@@ -65,11 +65,6 @@ if ('cgi' === PHP_SAPI || 'cgi-fcgi' === PHP_SAPI) {
   throw new \Exception('[bootstrap] Cannot be run under '.PHP_SAPI.' SAPI');
 }
 
-require 'xar-support.php';
-require 'scan-path.php';
-require 'bootstrap.php';
-require 'class-path.php';
-
 // Start I/O layers
 PHP_VERSION < '5.6' && iconv_set_encoding('internal_encoding', \xp::ENCODING);
 array_shift($argv);
@@ -77,28 +72,13 @@ foreach ($argv as $i => $val) {
   $argv[$i]= iconv('utf-7', \xp::ENCODING, $val);
 }
 
-if (is_file($argv[0])) {
-  if (0 === substr_compare($argv[0], '.class.php', -10)) {
-    $uri= realpath($argv[0]);
-    if (null === ($cl= \lang\ClassLoader::getDefault()->findUri($uri))) {
-      throw new \Exception('Cannot load '.$uri.' - not in class path');
-    }
-    $class= $cl->loadUri($uri);
-  } else if (0 === substr_compare($argv[0], '.xar', -4)) {
-    $cl= \lang\ClassLoader::registerPath(realpath($argv[0]));
-    if (!$cl->providesResource('META-INF/manifest.ini')) {
-      throw new \Exception($cl->toString().' does not provide a manifest');
-    }
-    $class= $cl->loadClass(parse_ini_string($cl->getResource('META-INF/manifest.ini'))['main-class']);
-  } else {
-    $class= \lang\XPClass::forName('xp.runtime.Evaluate');
-    array_unshift($argv, 'eval');
-  }
-} else {
-  $class= \lang\ClassLoader::getDefault()->loadClass($argv[0]);
-}
+require 'xar-support.php';
+require 'scan-path.php';
+require 'bootstrap.php';
+require 'class-path.php';
+require 'entry.php';
 
-$_SERVER['argv']= $argv;
+$class= entry($argv);
 try {
   exit($class->getMethod('main')->invoke(null, array(array_slice($argv, 1))));
 } catch (\lang\SystemExit $e) {
