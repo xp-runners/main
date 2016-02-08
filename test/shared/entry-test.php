@@ -13,6 +13,7 @@ exit($test->run([
     file_put_contents($path->compose($this->classpath, 'test.xar'), 'CCA...');
     file_put_contents($path->compose($this->classpath, 'notrunnable.xar'), 'CCA...');
     file_put_contents($path->compose($this->classpath, 'Test.script.php'), '<?php ');
+    file_put_contents($path->compose($this->classpath, 'test'), '#!/usr/bin/env xp');
 
     class_exists('lang\\ClassLoader') || eval('namespace lang; class ClassLoader {
       private $path;
@@ -72,6 +73,11 @@ exit($test->run([
 
   'script file entry point' => function() use($path) {
     $argv= [$path->compose($this->classpath, 'Test.script.php')];
+    $this->assertEquals('xp.runtime.Evaluate', \xp\entry($argv));
+  },
+
+  'script file entry point does not require .php extension' => function() use($path) {
+    $argv= [$path->compose($this->classpath, 'test')];
     $this->assertEquals('xp.runtime.Evaluate', \xp\entry($argv));
   },
 ]));
