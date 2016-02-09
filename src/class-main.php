@@ -67,7 +67,9 @@ if ('cgi' === PHP_SAPI || 'cgi-fcgi' === PHP_SAPI) {
 
 require 'xar-support.php';
 require 'scan-path.php';
-require 'bootstrap.php';
+
+$bootstrap= require 'bootstrap.php', bootstrap($cwd, $home);
+
 require 'class-path.php';
 
 PHP_VERSION < '5.6' && iconv_set_encoding('internal_encoding', \xp::ENCODING);

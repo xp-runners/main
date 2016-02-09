@@ -1,7 +1,5 @@
 <?php namespace xp;
 
-$bootstrap= bootstrap($cwd, $home);
-
 foreach ($bootstrap['files'] as $file) {
   require $file;
 }

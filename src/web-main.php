@@ -3,11 +3,12 @@
 // Set WEB specific handling
 $home= getenv('WEB_ROOT') ?: $_SERVER['DOCUMENT_ROOT'].'/..';
 $config= ini_get('user_dir') ?: $home.'/etc';
-$cwd= $home;
 
 require 'xar-support.php';
 require 'scan-path.php';
-require 'bootstrap.php';
+
+$bootstrap= require 'bootstrap.php', bootstrap($home, $home);
+
 require 'class-path.php';
 
 // Set error status to 516 by default - if a fatal error occurs,
