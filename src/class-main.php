@@ -65,20 +65,20 @@ if ('cgi' === PHP_SAPI || 'cgi-fcgi' === PHP_SAPI) {
   throw new \Exception('[bootstrap] Cannot be run under '.PHP_SAPI.' SAPI');
 }
 
-// Start I/O layers
+require 'xar-support.php';
+require 'scan-path.php';
+require 'bootstrap.php';
+require 'class-path.php';
+
 PHP_VERSION < '5.6' && iconv_set_encoding('internal_encoding', \xp::ENCODING);
 array_shift($argv);
 foreach ($argv as $i => $val) {
   $argv[$i]= iconv('utf-7', \xp::ENCODING, $val);
 }
 
-require 'xar-support.php';
-require 'scan-path.php';
-require 'bootstrap.php';
-require 'class-path.php';
-
 $class= require 'entry.php', entry($argv);
 $_SERVER['argv']= $argv;
+
 try {
   exit($class->getMethod('main')->invoke(null, array(array_slice($argv, 1))));
 } catch (\lang\SystemExit $e) {

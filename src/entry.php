@@ -15,8 +15,8 @@ function entry(&$argv) {
       }
       return $cl->loadClass(parse_ini_string($cl->getResource('META-INF/manifest.ini'))['main-class']);
     } else {
-      return \lang\ClassLoader::getDefault()->loadClass('xp.runtime.Evaluate');
       array_unshift($argv, 'eval');
+      return \lang\ClassLoader::getDefault()->loadClass('xp.runtime.Evaluate');
     }
   } else {
     return \lang\ClassLoader::getDefault()->loadClass($argv[0]);
