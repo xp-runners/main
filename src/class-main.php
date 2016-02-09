@@ -76,9 +76,8 @@ require 'xar-support.php';
 require 'scan-path.php';
 require 'bootstrap.php';
 require 'class-path.php';
-require 'entry.php';
 
-$class= entry($argv);
+$class= require 'entry.php', entry($argv);
 $_SERVER['argv']= $argv;
 try {
   exit($class->getMethod('main')->invoke(null, array(array_slice($argv, 1))));
