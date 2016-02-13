@@ -4,8 +4,17 @@ set_exception_handler(function($e) {
   if ($e instanceof \lang\Throwable) {
     fputs(STDERR, 'Uncaught exception: '.$e->toString());
   } else {
-    fputs(STDERR, 'Uncaught exception: '.get_class($e).' ('.$e->getMessage().")\n");
     $stringOf= class_exists('xp', false) ? array('xp', 'stringOf') : function($val) { return var_export($val, 1); };
+    fprintf(
+      STDERR,
+      "Uncaught exception: %s (%s)\n  at <source> [line %d of %s]\n  at <main>(%s) [line 0 of %s]\n",
+      get_class($e),
+      $e->getMessage(),
+      $e->getLine(),
+      str_replace(getcwd(), '.', $e->getFile()),
+      implode(', ', array_map($stringOf, array_slice($_SERVER['argv'], 1))),
+      str_replace('.', DIRECTORY_SEPARATOR, $_SERVER['argv'][0]).'.class.php'
+    );
     foreach ($e->getTrace() as $trace) {
       fprintf(STDERR,
         "  at %s%s%s(%s) [line %d of %s]\n",
@@ -82,7 +91,7 @@ $class= require 'entry.php', entry($argv);
 $_SERVER['argv']= $argv;
 
 try {
-  exit($class->getMethod('main')->invoke(null, array(array_slice($argv, 1))));
+  exit($class::main(array_slice($argv, 1)));
 } catch (\lang\SystemExit $e) {
   if ($message= $e->getMessage()) echo $message, "\n";
   exit($e->getCode());
