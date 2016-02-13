@@ -27,13 +27,13 @@ To run the inlining process, execute the following:
 $ cat src/class-main.php | perl inline.pl src > class-main.php
 ```
 
-*The code for this was written in Perl because that is available inside Travis-CI's **language: csharp**environment.*
+*The code for this was written in Perl because that is available inside Travis-CI's language: csharp environment.*
 
 Tests
 -----
 Tests can be run using the test.sh shell script:
 
-```php
+```sh
 $ sh test.sh
 test/shared/bootstrap-classpath-test.php: [........]
 
