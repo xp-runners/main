@@ -15,6 +15,11 @@ exit($test->run([
     file_put_contents($path->compose($this->classpath, 'Test.script.php'), '<?php ');
     file_put_contents($path->compose($this->classpath, 'test'), '#!/usr/bin/env xp');
 
+    class_exists('lang\\XPClass') || eval('namespace lang; class XPClass {
+      private $name;
+      public function __construct($name) { $this->name= $name; }
+      public function literal() { return strtr($this->name, ".", "\\\\"); }
+    }');
     class_exists('lang\\ClassLoader') || eval('namespace lang; class ClassLoader {
       private $path;
       public function __construct($path) { $this->path= $path; }
@@ -23,10 +28,9 @@ exit($test->run([
       public static function registerPath($path) { return new self($path); }
 
       public function providesResource($resource) { return strstr($this->path, "test.xar"); }
-      public function getResource($resource) { return "[archive]\nmain-class=Test"; }
-      public function loadClass($class) { return $class; }
+      public function getResource($resource) { return "[archive]\nmain-class=com.example.Test"; }
       public function findUri($uri) { return strstr($uri, "Test.class.php") ? new self(dirname($uri)) : null; }
-      public function loadUri($uri) { return substr(basename($uri), 0, -strlen(".class.php")); }
+      public function loadUri($uri) { return new XPClass(substr(basename($uri), 0, -strlen(".class.php"))); }
 
       public function toString() { return "MockCL({$this->path})"; }
     }');
@@ -59,7 +63,7 @@ exit($test->run([
 
   'xar entry point' => function() use($path) {
     $argv= [$path->compose($this->classpath, 'test.xar')];
-    $this->assertEquals('Test', \xp\entry($argv));
+    $this->assertEquals('com\\example\\Test', \xp\entry($argv));
   },
 
   'xar entry point without META-INF/manifest.ini' => function() use($path) {
@@ -73,11 +77,11 @@ exit($test->run([
 
   'script file entry point' => function() use($path) {
     $argv= [$path->compose($this->classpath, 'Test.script.php')];
-    $this->assertEquals('xp.runtime.Evaluate', \xp\entry($argv));
+    $this->assertEquals('xp\\runtime\\Evaluate', \xp\entry($argv));
   },
 
   'script file entry point does not require .php extension' => function() use($path) {
     $argv= [$path->compose($this->classpath, 'test')];
-    $this->assertEquals('xp.runtime.Evaluate', \xp\entry($argv));
+    $this->assertEquals('xp\\runtime\\Evaluate', \xp\entry($argv));
   },
 ]));

@@ -82,7 +82,7 @@ $class= require 'entry.php', entry($argv);
 $_SERVER['argv']= $argv;
 
 try {
-  exit($class->getMethod('main')->invoke(null, array(array_slice($argv, 1))));
+  exit($class::main(array_slice($argv, 1)));
 } catch (\lang\SystemExit $e) {
   if ($message= $e->getMessage()) echo $message, "\n";
   exit($e->getCode());
