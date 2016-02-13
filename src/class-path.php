@@ -11,5 +11,10 @@ if (class_exists('xp', false)) {
   $paths= array_merge($bootstrap['overlay'], $bootstrap['core'], $bootstrap['local']);
   require $bootstrap['base'];
 } else {
-  throw new \Exception('[bootstrap] Cannot determine boot class path from '.get_include_path());
+  $parts= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
+  throw new \Exception(sprintf(
+    "Cannot locate xp-framework/core anywhere in {\n  modules:   %s\n  classpath: %s\n}",
+    ($p= rtrim($parts[0], PATH_SEPARATOR)) ? "[$p]" : '(empty)',
+    ($p= rtrim($parts[1], PATH_SEPARATOR)) ? "[$p]" : '(empty)'
+  ));
 }
