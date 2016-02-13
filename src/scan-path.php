@@ -13,7 +13,7 @@ function path($in, $bail= true) {
 }
 
 function pathfiles($path) {
-  $result= [];
+  $result= array();
   if ($pr= @opendir($path)) {
     while ($file= readdir($pr)) {
       if (0 !== substr_compare($file, '.pth', -4)) continue;

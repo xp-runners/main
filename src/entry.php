@@ -13,7 +13,8 @@ function entry(&$argv) {
       if (!$cl->providesResource('META-INF/manifest.ini')) {
         throw new \Exception($cl->toString().' does not provide a manifest');
       }
-      return $cl->loadClass(parse_ini_string($cl->getResource('META-INF/manifest.ini'))['main-class']);
+      $manifest= parse_ini_string($cl->getResource('META-INF/manifest.ini'));
+      return $cl->loadClass($manifest['main-class']);
     } else {
       array_unshift($argv, 'eval');
       return \lang\ClassLoader::getDefault()->loadClass('xp.runtime.Evaluate');
