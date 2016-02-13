@@ -16,5 +16,5 @@ if (class_exists('xp', false)) {
     "Cannot locate xp-framework/core anywhere in {\n  modules:   %s\n  classpath: %s\n}",
     ($p= rtrim($parts[0], PATH_SEPARATOR)) ? "[$p]" : '(empty)',
     ($p= rtrim($parts[1], PATH_SEPARATOR)) ? "[$p]" : '(empty)'
-  ));
+  ), -1);
 }

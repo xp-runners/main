@@ -3,6 +3,8 @@
 set_exception_handler(function($e) {
   if ($e instanceof \lang\Throwable) {
     fputs(STDERR, 'Uncaught exception: '.$e->toString());
+  } else if (-1 === $e->getCode()) {
+    fputs(STDERR, $e->getMessage());
   } else {
     $stringOf= class_exists('xp', false) ? array('xp', 'stringOf') : function($val) { return var_export($val, 1); };
     fprintf(
