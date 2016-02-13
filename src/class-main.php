@@ -5,7 +5,7 @@ set_exception_handler(function($e) {
     fputs(STDERR, 'Uncaught exception: '.$e->toString());
   } else {
     fputs(STDERR, 'Uncaught exception: '.get_class($e).' ('.$e->getMessage().")\n");
-    $stringOf= class_exists('xp', false) ? ['xp', 'stringOf'] : function($val) { return var_export($val, 1); };
+    $stringOf= class_exists('xp', false) ? array('xp', 'stringOf') : function($val) { return var_export($val, 1); };
     foreach ($e->getTrace() as $trace) {
       fprintf(STDERR,
         "  at %s%s%s(%s) [line %d of %s]\n",
@@ -35,7 +35,7 @@ register_shutdown_function(function() {
   if (null !== $e && isset($types[$e['type']])) {
     if (class_exists('xp', false)) {
       __error($e['type'], $e['message'], $e['file'], $e['line']);
-      $stringOf= ['xp', 'stringOf'];
+      $stringOf= array('xp', 'stringOf');
     } else {
       $stringOf= function($val) { return var_export($val, 1); };
     }
