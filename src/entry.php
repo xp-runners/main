@@ -9,7 +9,7 @@ function entry(&$argv) {
       }
       return $cl->loadUri($uri)->literal();
     } else if (0 === substr_compare($argv[0], '.xar', -4)) {
-      $cl= \lang\ClassLoader::registerPath(realpath($argv[0]));
+      $cl= \lang\ClassLoader::registerPath($argv[0]);
       if (!$cl->providesResource('META-INF/manifest.ini')) {
         throw new \Exception($cl->toString().' does not provide a manifest');
       }
