@@ -91,12 +91,12 @@ foreach ($argv as $i => $val) {
 $class= require 'entry.php', entry($argv);
 $_SERVER['argv']= $argv;
 
-if (!is_callable([$class, 'main'], false, $main)) {
+if (!is_callable([$class, 'main'])) {
   throw new \Exception('Class `'.strtr($class, '\\', '.').'\' does not have a main() method');
 }
 
 try {
-  exit($main(array_slice($argv, 1)));
+  exit($class::main(array_slice($argv, 1)));
 } catch (\lang\SystemExit $e) {
   if ($message= $e->getMessage()) echo $message, "\n";
   exit($e->getCode());
