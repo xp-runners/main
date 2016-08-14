@@ -50,14 +50,14 @@ exit($test->run([
   },
 
   'double' => function() {
-    $this->assertEquals('1.0', \xp\stringOf(1.0));
+    $this->assertEquals(PHP_VERSION > 7 ? '1.0' : '1', \xp\stringOf(1.0));
   },
 
   'double_zero' => function() {
-    $this->assertEquals('0.0', \xp\stringOf(0.0));
+    $this->assertEquals(PHP_VERSION > 7 ? '0.0' : '0', \xp\stringOf(0.0));
   },
 
   'negative_double' => function() {
-    $this->assertEquals('-1.0', \xp\stringOf(-1.0));
+    $this->assertEquals(PHP_VERSION > 7 ? '-1.0': '-1', \xp\stringOf(-1.0));
   },
 ]));
