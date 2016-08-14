@@ -1,12 +1,14 @@
 <?php namespace xp;
 
+require 'stringof.php';
+
 set_exception_handler(function($e) {
   if ($e instanceof \lang\Throwable) {
     fputs(STDERR, 'Uncaught exception: '.$e->toString());
   } else if (-1 === $e->getCode()) {
     fputs(STDERR, $e->getMessage());
   } else {
-    $stringOf= class_exists('xp', false) ? array('xp', 'stringOf') : function($val) { return var_export($val, 1); };
+    $stringOf= class_exists('xp', false) ? array('xp', 'stringOf') : 'stringOf';
     fprintf(
       STDERR,
       "Uncaught exception: %s (%s)\n  at <source> [line %d of %s]\n  at <main>(%s) [line 0 of %s]\n",
@@ -44,11 +46,7 @@ register_shutdown_function(function() {
 
   $e= error_get_last();
   if (null !== $e && isset($types[$e['type']])) {
-    if (class_exists('xp', false)) {
-      $stringOf= array('xp', 'stringOf');
-    } else {
-      $stringOf= function($val) { return var_export($val, 1); };
-    }
+    $stringOf= class_exists('xp', false) ? array('xp', 'stringOf') : 'stringOf';
     fprintf(
       STDERR,
       "Uncaught error: %s (%s)\n  at <source> [line %d of %s]\n  at <main>(%s) [line 0 of %s]\n",
