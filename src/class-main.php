@@ -45,7 +45,6 @@ register_shutdown_function(function() {
   $e= error_get_last();
   if (null !== $e && isset($types[$e['type']])) {
     if (class_exists('xp', false)) {
-      __error($e['type'], $e['message'], $e['file'], $e['line']);
       $stringOf= array('xp', 'stringOf');
     } else {
       $stringOf= function($val) { return var_export($val, 1); };
@@ -91,6 +90,10 @@ foreach ($argv as $i => $val) {
 
 $class= require 'entry.php', entry($argv);
 $_SERVER['argv']= $argv;
+
+if (!is_callable([$class, 'main'])) {
+  throw new \Exception('Class `'.strtr($class, '\\', '.').'\' does not have a main() method');
+}
 
 try {
   exit($class::main(array_slice($argv, 1)));
