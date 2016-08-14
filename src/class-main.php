@@ -17,7 +17,7 @@ set_exception_handler(function($e) {
       $e->getLine(),
       str_replace(getcwd(), '.', $e->getFile()),
       implode(', ', array_map($stringOf, array_slice($_SERVER['argv'], 1))),
-      str_replace('.', DIRECTORY_SEPARATOR, $_SERVER['argv'][0]).'.class.php'
+      basename($_SERVER['argv'][0])
     );
     foreach ($e->getTrace() as $trace) {
       fprintf(STDERR,
