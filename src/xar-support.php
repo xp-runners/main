@@ -22,7 +22,7 @@ final class xar {
     if (!isset($archives[$archive])) {
       $current= array('handle' => fopen($archive, 'rb'), 'dev' => crc32($archive));
       $header= unpack('a3id/c1version/V1indexsize/a*reserved', fread($current['handle'], 0x0100));
-      if ('CCA' != $header['id']) \raise('lang.FormatException', 'Malformed archive '.$archive);
+      if ('CCA' != $header['id']) throw new \Exception('Malformed archive '.$archive);
       for ($current['index']= array(), $i= 0; $i < $header['indexsize']; $i++) {
         $entry= unpack(
           $unpack[$header['version']], 
