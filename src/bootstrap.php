@@ -31,6 +31,6 @@ function bootstrap($cwd, $home) {
   }
 
   // Always add current directory
-  $result['local'][]= path($cwd);
+  $result['local'][]= path($cwd, $cwd, $home);
   return $result;
 }
