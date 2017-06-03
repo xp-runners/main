@@ -8,7 +8,6 @@ set_exception_handler(function($e) {
   } else if (-1 === $e->getCode()) {
     fputs(STDERR, $e->getMessage());
   } else {
-    $stringOf= class_exists('xp', false) ? array('xp', 'stringOf') : '\xp\stringOf';
     fprintf(
       STDERR,
       "Uncaught exception: %s (%s)\n  at <source> [line %d of %s]\n  at <main>(%s) [line 0 of %s]\n",
@@ -16,7 +15,7 @@ set_exception_handler(function($e) {
       $e->getMessage(),
       $e->getLine(),
       str_replace(getcwd(), '.', $e->getFile()),
-      implode(', ', array_map($stringOf, array_slice($_SERVER['argv'], 1))),
+      implode(', ', array_map('\xp\stringOf', array_slice($_SERVER['argv'], 1))),
       basename($_SERVER['argv'][0])
     );
     foreach ($e->getTrace() as $trace) {
@@ -25,7 +24,7 @@ set_exception_handler(function($e) {
         isset($trace['class']) ? strtr($trace['class'], '\\', '.') : '<main>',
         isset($trace['type']) ? $trace['type'] : '::',
         isset($trace['function']) ? $trace['function'] : '<main>',
-        isset($trace['args']) ? implode(', ', array_map($stringOf, $trace['args'])) : '',
+        isset($trace['args']) ? implode(', ', array_map('\xp\stringOf', $trace['args'])) : '',
         isset($trace['line']) ? $trace['line'] : 0,
         isset($trace['file']) ? basename($trace['file']) : '(unknown)'
       );
@@ -46,7 +45,6 @@ register_shutdown_function(function() {
 
   $e= error_get_last();
   if (null !== $e && isset($types[$e['type']])) {
-    $stringOf= class_exists('xp', false) ? array('xp', 'stringOf') : '\xp\stringOf';
     fprintf(
       STDERR,
       "Uncaught error: %s (%s)\n  at <source> [line %d of %s]\n  at <main>(%s) [line 0 of %s]\n",
@@ -54,7 +52,7 @@ register_shutdown_function(function() {
       $e['message'],
       $e['line'],
       str_replace(getcwd(), '.', $e['file']),
-      implode(', ', array_map($stringOf, array_slice($_SERVER['argv'], 1))),
+      implode(', ', array_map('\xp\stringOf', array_slice($_SERVER['argv'], 1))),
       str_replace('.', DIRECTORY_SEPARATOR, $_SERVER['argv'][0]).'.class.php'
     );
   }
