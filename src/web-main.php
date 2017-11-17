@@ -2,6 +2,7 @@
 
 // Set WEB specific handling
 $home= ($e= getenv('WEB_ROOT')) ? $e : $_SERVER['DOCUMENT_ROOT'].'/..';
+$cwd= $home;
 $config= ($d= ini_get('user_dir')) ? $d : $home.'/etc';
 
 require 'xar-support.php';
