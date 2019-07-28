@@ -51,7 +51,7 @@ ini_set('error_append_string', '</xmp>');
 ini_set('html_errors', 0);
 
 try {
-  exit(\xp\scriptlet\Runner::main(array($home, $config, $_SERVER['SERVER_PROFILE'], $_SERVER['SCRIPT_URL'])));
+  exit(\xp\scriptlet\Runner::main([$home, $config, $_SERVER['SERVER_PROFILE'], $_SERVER['SCRIPT_URL']]));
 } catch (\lang\SystemExit $e) {
   if ($message= $e->getMessage()) echo $message, "\n";
   exit($e->getCode());
