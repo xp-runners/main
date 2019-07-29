@@ -89,7 +89,14 @@ final class xar {
     return true;
   }
   // }}}
-  
+
+  // {{{ proto bool stream_set_option(int option, int arg1, int arg2)
+  //     Callback for options
+  function stream_set_option($option, $arg1, $arg2) {
+    return true;
+  }
+  // }}}
+
   // {{{ proto int stream_tell
   //     Callback for ftell
   function stream_tell() {
