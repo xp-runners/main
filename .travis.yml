@@ -10,12 +10,11 @@ php:
   - 7.2
   - 7.3
   - 7.4
-  - 8.0
-  - nightly
+  - master
 
 matrix:
   allow_failures:
-    - php: nightly
+    - php: master
 
 script:
   - sh test.sh
