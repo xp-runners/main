@@ -108,7 +108,7 @@ class Run {
     return $this->process($name, $args);
   }
 
-  private final function equals($a, $b) {
+  private function equals($a, $b) {
     if (is_array($a)) {
       if (sizeof($a) !== sizeof($b)) return false;
       foreach ($a as $key => $val) {
