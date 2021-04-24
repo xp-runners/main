@@ -78,10 +78,17 @@ $bootstrap= require 'bootstrap.php', bootstrap($cwd, $home);
 
 require 'class-path.php';
 
-PHP_VERSION < '5.6' && iconv_set_encoding('internal_encoding', \xp::ENCODING);
 array_shift($argv);
-foreach ($argv as $i => $val) {
-  $argv[$i]= iconv('utf-7', \xp::ENCODING, $val);
+if (defined('ICONV_IMPL')) {
+  foreach ($argv as $i => $val) {
+    $argv[$i]= iconv('utf-7', \xp::ENCODING, $val);
+  }
+} else if (defined('MB_CASE_LOWER')) {
+  foreach ($argv as $i => $val) {
+    $argv[$i]= mb_convert_encoding($val, \xp::ENCODING, 'utf-7');
+  }
+} else {
+  throw new \Exception('[bootstrap] Neither iconv nor mbstring present');
 }
 
 $class= require 'entry.php', entry($argv);
