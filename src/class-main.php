@@ -2,7 +2,7 @@
 
 require 'stringof.php';
 
-set_exception_handler(function($e) {
+set_exception_handler(function($e) use($argv) {
   if ($e instanceof \lang\Throwable) {
     fputs(STDERR, 'Uncaught exception: '.$e->toString());
   } else if (-1 === $e->getCode()) {
@@ -15,8 +15,8 @@ set_exception_handler(function($e) {
       $e->getMessage(),
       $e->getLine(),
       str_replace(getcwd(), '.', $e->getFile()),
-      implode(', ', array_map('\xp\stringOf', array_slice($_SERVER['argv'], 1))),
-      basename($_SERVER['argv'][0])
+      implode(', ', array_map('\xp\stringOf', array_slice($argv, 1))),
+      basename($argv[0])
     );
     foreach ($e->getTrace() as $trace) {
       fprintf(STDERR,
@@ -34,7 +34,7 @@ set_exception_handler(function($e) {
 });
 
 ini_set('display_errors', 'false');
-register_shutdown_function(function() {
+register_shutdown_function(function() use($argv) {
   static $types= array(
     E_ERROR         => 'Fatal error',
     E_USER_ERROR    => 'Fatal error',
@@ -52,8 +52,8 @@ register_shutdown_function(function() {
       $e['message'],
       $e['line'],
       str_replace(getcwd(), '.', $e['file']),
-      implode(', ', array_map('\xp\stringOf', array_slice($_SERVER['argv'], 1))),
-      str_replace('.', DIRECTORY_SEPARATOR, $_SERVER['argv'][0]).'.class.php'
+      implode(', ', array_map('\xp\stringOf', array_slice($argv, 1))),
+      str_replace('.', DIRECTORY_SEPARATOR, $argv[0]).'.class.php'
     );
   }
 });
