@@ -27,7 +27,11 @@ function bootstrap($cwd, $home) {
     } else if ('~' === $path[0]) {
       $path= $home.substr($path, 1);
     }
-    scanpath($result, pathfiles($path), $path, $home);
+    if (is_file($path)) {
+      $result['files'][]= $path;
+    } else {
+      scanpath($result, pathfiles($path), $path, $home);
+    }
   }
 
   // Always add current directory
