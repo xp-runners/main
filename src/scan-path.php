@@ -55,7 +55,7 @@ function scanpath(&$result, $paths, $base, $home) {
     } else if ('?' === $path[0]) {
       $bail= false;
       $path= substr($path, 1);
-    } else if ('@' === $path{0}) {
+    } else if ('@' === $path[0]) {
       $resolved= path(substr($path, 1), $base, $home);
       scanpath($result, pathfiles($resolved), $resolved, $home);
       continue;
