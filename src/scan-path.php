@@ -1,9 +1,9 @@
 <?php namespace xp;
 
 function path($path, $base, $home, $bail= true) {
-  if ('~' === $path{0}) {
+  if ('~' === $path[0]) {
     $in= $home.DIRECTORY_SEPARATOR.substr($path, 1);
-  } else if ('/' === $path{0} || '\\' === $path{0} || strlen($path) > 2 && (':' === $path{1} && '\\' === $path{2})) {
+  } else if ('/' === $path[0] || '\\' === $path[0] || strlen($path) > 2 && (':' === $path[1] && '\\' === $path[2])) {
     $in= $path;
   } else {
     $in= $base.DIRECTORY_SEPARATOR.$path;
