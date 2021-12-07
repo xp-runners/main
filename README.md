@@ -1,6 +1,6 @@
 XP Runners
 ==========
-[![Build Status on TravisCI](https://secure.travis-ci.org/xp-runners/main.svg)](http://travis-ci.org/xp-runners/main)
+[![Build status on GitHub](https://github.com/xp-runners/main/workflows/Tests/badge.svg)](https://github.com/xp-runners/main/actions)
 [![BSD License](https://raw.githubusercontent.com/xp-framework/web/master/static/licence-bsd.png)](https://github.com/xp-runners/reference/blob/master/LICENSE.md)
 
 

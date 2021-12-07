@@ -2,13 +2,12 @@
 
 require 'stringof.php';
 
-set_exception_handler(function($e) {
+set_exception_handler(function($e) use($argv) {
   if ($e instanceof \lang\Throwable) {
     fputs(STDERR, 'Uncaught exception: '.$e->toString());
   } else if (-1 === $e->getCode()) {
     fputs(STDERR, $e->getMessage());
   } else {
-    $stringOf= class_exists('xp', false) ? array('xp', 'stringOf') : '\xp\stringOf';
     fprintf(
       STDERR,
       "Uncaught exception: %s (%s)\n  at <source> [line %d of %s]\n  at <main>(%s) [line 0 of %s]\n",
@@ -16,8 +15,8 @@ set_exception_handler(function($e) {
       $e->getMessage(),
       $e->getLine(),
       str_replace(getcwd(), '.', $e->getFile()),
-      implode(', ', array_map($stringOf, array_slice($_SERVER['argv'], 1))),
-      basename($_SERVER['argv'][0])
+      implode(', ', array_map('\xp\stringOf', array_slice($argv, 1))),
+      basename($argv[0])
     );
     foreach ($e->getTrace() as $trace) {
       fprintf(STDERR,
@@ -25,7 +24,7 @@ set_exception_handler(function($e) {
         isset($trace['class']) ? strtr($trace['class'], '\\', '.') : '<main>',
         isset($trace['type']) ? $trace['type'] : '::',
         isset($trace['function']) ? $trace['function'] : '<main>',
-        isset($trace['args']) ? implode(', ', array_map($stringOf, $trace['args'])) : '',
+        isset($trace['args']) ? implode(', ', array_map('\xp\stringOf', $trace['args'])) : '',
         isset($trace['line']) ? $trace['line'] : 0,
         isset($trace['file']) ? basename($trace['file']) : '(unknown)'
       );
@@ -35,7 +34,7 @@ set_exception_handler(function($e) {
 });
 
 ini_set('display_errors', 'false');
-register_shutdown_function(function() {
+register_shutdown_function(function() use($argv) {
   static $types= array(
     E_ERROR         => 'Fatal error',
     E_USER_ERROR    => 'Fatal error',
@@ -46,7 +45,6 @@ register_shutdown_function(function() {
 
   $e= error_get_last();
   if (null !== $e && isset($types[$e['type']])) {
-    $stringOf= class_exists('xp', false) ? array('xp', 'stringOf') : '\xp\stringOf';
     fprintf(
       STDERR,
       "Uncaught error: %s (%s)\n  at <source> [line %d of %s]\n  at <main>(%s) [line 0 of %s]\n",
@@ -54,8 +52,8 @@ register_shutdown_function(function() {
       $e['message'],
       $e['line'],
       str_replace(getcwd(), '.', $e['file']),
-      implode(', ', array_map($stringOf, array_slice($_SERVER['argv'], 1))),
-      str_replace('.', DIRECTORY_SEPARATOR, $_SERVER['argv'][0]).'.class.php'
+      implode(', ', array_map('\xp\stringOf', array_slice($argv, 1))),
+      str_replace('.', DIRECTORY_SEPARATOR, $argv[0]).'.class.php'
     );
   }
 });
@@ -80,10 +78,17 @@ $bootstrap= require 'bootstrap.php', bootstrap($cwd, $home);
 
 require 'class-path.php';
 
-PHP_VERSION < '5.6' && iconv_set_encoding('internal_encoding', \xp::ENCODING);
 array_shift($argv);
-foreach ($argv as $i => $val) {
-  $argv[$i]= iconv('utf-7', \xp::ENCODING, $val);
+if (defined('ICONV_IMPL')) {
+  foreach ($argv as $i => $val) {
+    $argv[$i]= iconv('utf-7', \xp::ENCODING, $val);
+  }
+} else if (defined('MB_CASE_LOWER')) {
+  foreach ($argv as $i => $val) {
+    $argv[$i]= mb_convert_encoding($val, \xp::ENCODING, 'utf-7');
+  }
+} else {
+  throw new \Exception('[bootstrap] Neither iconv nor mbstring present');
 }
 
 $class= require 'entry.php', entry($argv);

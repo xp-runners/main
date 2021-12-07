@@ -21,14 +21,14 @@ function path($path, $base, $home, $bail= true) {
 }
 
 function pathfiles($path) {
-  $result= array();
+  $result= [];
   if ($pr= @opendir($path)) {
     while ($file= readdir($pr)) {
       if (0 !== substr_compare($file, '.pth', -4)) continue;
 
       foreach (file($path.DIRECTORY_SEPARATOR.$file) as $line) {
         $line= trim($line);
-        if ('' === $line || '#' === $line{0}) {
+        if ('' === $line || '#' === $line[0]) {
           continue;
         } else {
           $result[]= $line;
@@ -49,10 +49,10 @@ function scanpath(&$result, $paths, $base, $home) {
     // Handle ? and ! prefixes
     $bail= true;
     $overlay= null;
-    if ('!' === $path{0}) {
+    if ('!' === $path[0]) {
       $overlay= 'overlay';
       $path= '!' === $path ? '.' : substr($path, 1);
-    } else if ('?' === $path{0}) {
+    } else if ('?' === $path[0]) {
       $bail= false;
       $path= substr($path, 1);
     } else if ('@' === $path{0}) {
@@ -67,7 +67,7 @@ function scanpath(&$result, $paths, $base, $home) {
         if (0 === substr_compare($resolved, '.xar', -4)) {
           if (is_file($f= 'xar://'.$resolved.'?__xp.php')) {
             $result['base']= $f;
-            $result['core']= array($resolved);
+            $result['core']= [$resolved];
             continue;
           }
         } else {

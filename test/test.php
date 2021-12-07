@@ -49,9 +49,9 @@ class Test {
     });
 
     foreach ($tests as $name => $closure) {
-      if ('@' === $name{0}) continue;
-
-      if ('#' === $name{0}) {
+      if ('@' === $name[0]) {
+        continue;
+      } else if ('#' === $name[0]) {
         echo 'I';
         $ignored[substr($name, 1)]= 'prefixed with #';
         continue;
@@ -108,7 +108,7 @@ class Run {
     return $this->process($name, $args);
   }
 
-  private final function equals($a, $b) {
+  private function equals($a, $b) {
     if (is_array($a)) {
       if (sizeof($a) !== sizeof($b)) return false;
       foreach ($a as $key => $val) {
