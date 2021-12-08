@@ -1,12 +1,10 @@
 <?php namespace xp;
 
-class Failed extends \Exception {
+use AllowDynamicProperties, Exception;
 
-}
+class Failed extends Exception { }
 
-class Error extends \Exception {
-
-}
+class Error extends Exception { }
 
 class Test {
 
@@ -85,6 +83,7 @@ class Test {
   }
 }
 
+#[AllowDynamicProperties]
 class Run {
   private $definition, $closure;
 
@@ -96,7 +95,7 @@ class Run {
   public function process($key, $args= []) {
     $key= '@'.$key;
     if (isset($this->definition[$key])) {
-      return call_user_func_array($this->definition[$key]->bindTo($this), $args);
+      return $this->definition[$key]->bindTo($this)(...$args);
     }
   }
 
