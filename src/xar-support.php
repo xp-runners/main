@@ -4,6 +4,7 @@ final class xar {
   public
     $position     = 0,
     $archive      = null,
+    $context      = null,
     $filename     = '';
     
   // {{{ proto [:var] acquire(string archive)
