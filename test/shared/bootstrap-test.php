@@ -61,7 +61,22 @@ exit($test->run(array_merge($base, [
         'overlay' => [],
         'core'    => [],
         'local'   => [$this->cwd],
-        'files'   => [$this->autoload]
+        'files'   => [$this->autoload => true]
+      ],
+      \xp\bootstrap($this->cwd, null)
+    );
+  },
+
+  // -cp vendor/autoload.php -cp vendor/autoload.php
+  'duplicate vendor/autoload.php in class path' => function() use($path) {
+    set_include_path($this->pass([], [$this->autoload, $this->autoload]));
+    $this->assertEquals(
+      [
+        'base'    => null,
+        'overlay' => [],
+        'core'    => [],
+        'local'   => [$this->cwd],
+        'files'   => [$this->autoload => true]
       ],
       \xp\bootstrap($this->cwd, null)
     );

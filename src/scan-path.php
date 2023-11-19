@@ -77,7 +77,7 @@ function scanpath(&$result, $paths, $base, $home) {
       }
 
       if (0 === substr_compare($resolved, '.php', -4)) {
-        $result['files'][]= $resolved;
+        $result['files'][$resolved]= true;
       } else {
         $result[$overlay ? $overlay : $type][]= $resolved;
       }

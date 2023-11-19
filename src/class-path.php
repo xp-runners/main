@@ -1,6 +1,6 @@
 <?php namespace xp;
 
-foreach ($bootstrap['files'] as $file) {
+foreach ($bootstrap['files'] as $file => $_) {
   require $file;
 }
 
