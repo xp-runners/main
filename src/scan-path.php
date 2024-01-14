@@ -1,6 +1,14 @@
 <?php namespace xp;
 
-function path($in, $bail= true) {
+function path($path, $base, $home, $bail= true) {
+  if ('~' === $path[0]) {
+    $in= $home.DIRECTORY_SEPARATOR.substr($path, 1);
+  } else if ('/' === $path[0] || '\\' === $path[0] || strlen($path) > 2 && (':' === $path[1] && '\\' === $path[2])) {
+    $in= $path;
+  } else {
+    $in= $base.DIRECTORY_SEPARATOR.$path;
+  }
+
   $qn= realpath($in);
   if (false === $qn) {
     if ($bail) {
@@ -47,19 +55,14 @@ function scanpath(&$result, $paths, $base, $home) {
     } else if ('?' === $path[0]) {
       $bail= false;
       $path= substr($path, 1);
-    }
-
-    // Expand file path
-    if ('~' === $path[0]) {
-      $expanded= $home.DIRECTORY_SEPARATOR.substr($path, 1);
-    } else if ('/' === $path[0] || '\\' === $path[0] || strlen($path) > 2 && (':' === $path[1] && '\\' === $path[2])) {
-      $expanded= $path;
-    } else {
-      $expanded= $base.DIRECTORY_SEPARATOR.$path;
+    } else if ('@' === $path[0]) {
+      $resolved= path(substr($path, 1), $base, $home);
+      scanpath($result, pathfiles($resolved), $resolved, $home);
+      continue;
     }
 
     // Resolve, check for XP core
-    if ($resolved= path($expanded, $bail)) {
+    if ($resolved= path($path, $base, $home, $bail)) {
       if (null === $result['base']) {
         if (0 === substr_compare($resolved, '.xar', -4)) {
           if (is_file($f= 'xar://'.$resolved.'?__xp.php')) {
