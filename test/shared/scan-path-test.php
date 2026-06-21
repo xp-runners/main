@@ -118,5 +118,20 @@ exit($test->run([
   'empty use path does not raise warnings' => function() use($path) {
     $result= ['base' => null];
     \xp\scanpath($result, [''], $this->classpath, $this->home);
+  },
+
+  // Includes
+  'module reference to home directory' => function() use($path) {
+    $result= ['base' => null];
+    file_put_contents($path->compose($this->devel, 'class.pth'), '.');
+    \xp\scanpath($result, ['@~/devel'], $this->classpath, $this->home);
+    $this->assertEquals(['base' => null, 'local' => [$this->devel]], $result);
+  },
+
+  'module reference to relative directory' => function() use($path) {
+    $result= ['base' => null];
+    file_put_contents($path->compose($this->home, 'class.pth'), '.');
+    \xp\scanpath($result, ['@home'], $this->classpath, $this->home);
+    $this->assertEquals(['base' => null, 'local' => [$this->home]], $result);
   }
 ]));
